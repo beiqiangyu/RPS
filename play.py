@@ -45,7 +45,7 @@ while True:
     if(k==ord("s")or start):
         frameWithoutText=frame.copy()
         picture=frameWithoutText[50:300,50:300]
-        picture = processImage.recognizeSkin(picture)
+        picture = processImage.model_recognizeSkin(picture)
         picture=cv.cvtColor(picture,cv.COLOR_BGR2GRAY)
         picture=cv.resize(picture,(200,200),interpolation=cv.INTER_AREA)
         picture = image.img_to_array(picture)

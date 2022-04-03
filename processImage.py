@@ -8,7 +8,7 @@ import numpy as np
 from PIL import Image
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 def getImageNamesAndClassLabels():
     class_list = os.listdir('Dataset')
@@ -35,12 +35,12 @@ def prepareTrainAndTestFolder(path, prev_path, images, labels):
 
     for i in range(0, len(images)):
         img = cv2.imread(os.path.join(prev_path, labels[i], images[i]), 1)
-        skinImg = recognizeSkin(img)
+        img = recognizeSkin(img)
 
         if not (os.path.isfile(os.path.join(path, labels[i], images[i]))):
-            cv2.imwrite(os.path.join(path, labels[i], images[i]), skinImg)
+            cv2.imwrite(os.path.join(path, labels[i], images[i]), img)
 
-def recognizeSkin(img):
+def model_recognizeSkin(img):
     min_YCrCb = np.array([0, 133, 77], np.uint8)
     max_YCrCb = np.array([235, 173, 127], np.uint8)
 
@@ -50,11 +50,23 @@ def recognizeSkin(img):
     resizedImg = cv2.resize(newimage, (200, 200), interpolation=cv2.INTER_AREA)
     return resizedImg
 
+def recognizeSkin(img):
+    ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCR_CB)
+
+    (y, cr, cb) = cv2.split(ycrcb)
+    cr1 = cv2.GaussianBlur(cr, (5, 5), 0)
+    _, skin = cv2.threshold(cr1, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # cv2.imshow("Skin Cr+OTSU", skin)
+
+    return skin
+
 def createImageForTrainingAndTesting():
     print("The images and labels getting for training and testing\n")
     unique = os.listdir("Dataset")
     train_data = []
     for label in unique:
+
         class_num = unique.index(label)
         path = 'Data\\train\\' + label
         for img in os.listdir(path):
@@ -114,7 +126,7 @@ def createFolders():
                 os.makedirs(os.path.join(path, folder_name, label))
                 print("create", folder_name, label)
 
-def preProcessDataSet(): #run when Data floder not made
+def preProcessDataSet(): #run when Data floder not made, it will create floder and fill image
     if not(os.path.exists('Data')):
         names, labels = getImageNamesAndClassLabels()
         X_train, y_train, X_test, y_test, X_val, y_val = splitDatasetTrainAndTest(names, labels)
@@ -122,6 +134,7 @@ def preProcessDataSet(): #run when Data floder not made
         prepareTrainAndTestFolder('Data\\train', 'Dataset', X_train, y_train)
         prepareTrainAndTestFolder('Data\\test', 'Dataset', X_test, y_test)
         prepareTrainAndTestFolder('Data\\validation', 'Dataset', X_val, y_val)
+        print("done")
 
 def getDataSet():
 
