@@ -116,7 +116,8 @@ def rank_window():
     rank_window["background"] = "#F7F268"
     rank_window.focus_set()
 
-    canvas = tk.Canvas(rank_window, bg='white', width=400, height=400) #camera canvas
+    canvas = tk.Canvas(rank_window, bg=bgcolor, width=500, height=500) #camera canvas
+    canvas.config(highlightthickness=0)
     canvas.place(relx=0.85, rely=0.5, anchor="center")
     capture = cv.VideoCapture(0)
 
@@ -139,6 +140,8 @@ def rank_window():
     def count_down_start(event):
         nonlocal counting
         rock_img_canvas.delete("all")
+        img = cv_image(capture)
+        result = predict_result(img)
         if counting == False:
             counting = True #lock
             count_down(count_canvas, three)
@@ -147,15 +150,16 @@ def rank_window():
             counting = False #unlock
 
             # nonlocal capture
-            img = cv_image(capture)
-            result = predict_result(img)
-
+            canvas.delete("all")
             if result == "rock":
-                left_gesture(rock_img_canvas, "paper")
+                two_hand_in(rock_img_canvas, canvas, "paper", result)
+                # left_gesture(rock_img_canvas, "paper")
             if result == "paper":
-                left_gesture(rock_img_canvas, "scissors")
+                two_hand_in(rock_img_canvas, canvas, "scissors", result)
+                # left_gesture(rock_img_canvas, "scissors")
             if result == "scissors":
-                left_gesture(rock_img_canvas, "rock")
+                two_hand_in(rock_img_canvas, canvas, "rock", result)
+                # left_gesture(rock_img_canvas, "rock")
         else:
             return
 
@@ -167,9 +171,6 @@ def rank_window():
             canvas.create_image(0, 0, anchor='nw', image=picture)
             rank_window.update()
             rank_window.after(100)
-    # main_thread = threading.Thread(target=main, args=())
-    # main_thread.setDaemon(True)
-    # main_thread.start()
     main()
 
 
@@ -196,8 +197,6 @@ def tk_image(capture):
 def count_down(canvas, image):
     minx = 50
     maxx = 250
-
-
     for i in range(minx, maxx+1):
         image = image.resize((i, i*2))
         tkimage = ImageTk.PhotoImage(image)
@@ -206,14 +205,11 @@ def count_down(canvas, image):
         # canvas.after(0.1)
 
 
-
 def left_hand_in(canvas, image):
 
     global tkimage
     start = -50
-    end = 170
-    tkimage = ImageTk.PhotoImage(image)
-
+    end = 180
     for i in range(start, end):
         tkimage = ImageTk.PhotoImage(image)
         canvas.create_image(i, 250, anchor='center', image=tkimage)
@@ -230,7 +226,42 @@ def left_gesture(canvas, gesture):
         img = Image.open("assets/scissors.png")
 
     left_hand_in(canvas, img)
+def reconize_gesture(gesture):
+    img = ""
+    if gesture == "rock":
+        img = Image.open("assets/rock.png")
+    elif gesture == "paper":
+        img = Image.open("assets/paper.png")
+    elif gesture == "scissors":
+        img = Image.open("assets/scissors.png")
+    return img
 
+def two_hand_in(left_canvas, right_canvas, left, right):
+
+    global left_tkimage
+    global right_tkimage
+    step = 210
+
+    left = reconize_gesture(left)
+    right = reconize_gesture(right)
+    right = right.rotate(180)
+    right = right.transpose(Image.FLIP_TOP_BOTTOM)
+    i = 0
+    while i < step:
+        left_tkimage = ImageTk.PhotoImage(left)
+        right_tkimage = ImageTk.PhotoImage(right)
+
+
+        left_canvas.create_image(-40+i, 250, anchor='center', image=left_tkimage)
+        right_canvas.create_image(470-i, 250, anchor='center', image=right_tkimage)
+
+        left_canvas.update()
+        right_canvas.update()
+        i += 2
+    right_canvas.after(1000)
+    right_canvas.delete("all")
+    left_canvas.delete("all")
+    # canvas.img = tkimage
 
 
 root_window_run()
