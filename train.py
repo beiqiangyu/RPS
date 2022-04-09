@@ -1,24 +1,17 @@
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
-
 import random
-
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
 import processImage
-
 from tensorflow.python.client import device_lib
 
-# 列出所有的本地机器设备
 
 # X_train, y_train, X_test, y_test, val_images, val_labels = processImage.getDataSet()
-
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 train_datagen = ImageDataGenerator(
         rescale=1./255,
@@ -74,7 +67,7 @@ model.fit(
     callbacks=[callbacks]
     )
 
-model.save_weights('skin_v3_simple_dataset_model.h5')
+model.save_weights('skin_v4_1_model.h5')
 
-with open("skin_v3_simple_dataset_model.json", "w") as json_file:
+with open("skin_v4_1_model.json", "w") as json_file:
     json_file.write(model.to_json())

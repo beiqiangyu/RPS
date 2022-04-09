@@ -30,9 +30,6 @@ def splitDatasetTrainAndTest(image_names, labels):
     return train_images, train_labels, test_images, test_labels, val_images, val_labels
 
 def prepareTrainAndTestFolder(path, prev_path, images, labels):
-    min_YCrCb = np.array([0, 133, 77], np.uint8)
-    max_YCrCb = np.array([235, 173, 127], np.uint8)
-
     for i in range(0, len(images)):
         img = cv2.imread(os.path.join(prev_path, labels[i], images[i]), 1)
         img = recognizeSkin(img)
@@ -60,6 +57,20 @@ def recognizeSkin(img):
     # cv2.imshow("Skin Cr+OTSU", skin)
 
     return skin
+
+    # img = cv2.imread(img, cv2.IMREAD_COLOR)
+    # ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCR_CB)
+    # (y, cr, cb) = cv2.split(ycrcb)
+    #
+    # skin = np.zeros(cr.shape, dtype=np.uint8)
+    # (x, y) = cr.shape
+    # for i in range(0, x):
+    #     for j in range(0, y):
+    #         if (cr[i][j] > 133) and (cr[i][j]) < 173 and (cb[i][j] > 77) and (cb[i][j]) < 127:
+    #             skin[i][j] = 255
+    #         else:
+    #             skin[i][j] = 0
+    # return skin
 
 def createImageForTrainingAndTesting():
     print("The images and labels getting for training and testing\n")
