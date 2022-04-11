@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 
 from processImage import model_recognizeSkin
+
 bgcolor = "#F7F268"
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
@@ -35,6 +36,7 @@ with open('../skin_v4_1_model.json', 'r') as f:
     model_json = f.read()
 model = model_from_json(model_json)
 model.load_weights("../skin_v4_1_model.h5")
+
 
 # with open('../skin_v3_simple_dataset_model.json', 'r') as f:
 #     model_json = f.read()
@@ -81,14 +83,15 @@ def predict_result(img):
     result = result_list[result_index]
     return result
 
+
 def get_heightest_score():
     f = open("assets/score.txt", "r")
     score = f.read()
     f.close()
     return score
 
-def root_window_run():
 
+def root_window_run():
     def pve_run():
         root_window.destroy()
         pve_window()
@@ -101,32 +104,34 @@ def root_window_run():
         root_window.destroy()
         pvp_prepare_window()
 
-    root_window =tk.Tk()
+    root_window = tk.Tk()
     root_window.title('42028 Deep Learning and Convolutional Neural Network Assignment 3 -- RPS GAMING')
     root_window.geometry('1280x720')
     # root_window.geometry('1920x1080')
     # root_window["background"] = "#F7F268"
 
-    #set memu background
+    # set memu background
     background = ImageTk.PhotoImage(file="assets/background.jpg")
     bglabel = tk.Label(root_window, image=background).pack()
 
-    #set score
+    # set score
     score = "Highest Score: " + str(get_heightest_score())
     board = tk.Message(text=score, font=("Gabriola", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
 
-
-    #set memu button
+    # set memu button
     pvest = ImageTk.PhotoImage(file="assets/pve.png")
     pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
     impst = ImageTk.PhotoImage(file="assets/imp.png")
 
-
-    rank_start_button = tk.Button( text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46, relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
-    pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
-    imps_start_button = tk.Button( text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
+    rank_start_button = tk.Button(text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46,
+                                  relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
+    pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46,
+                                 relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
+    imps_start_button = tk.Button(text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46,
+                                  relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
 
     root_window.mainloop()
+
 
 def imps_window():
     window = tk.Tk()
@@ -135,7 +140,7 @@ def imps_window():
     window["background"] = "#F7F268"
     window.focus_set()
 
-    canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500) #camera canvas
+    canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500)  # camera canvas
     canvas.config(highlightthickness=0)
     canvas.place(relx=0.85, rely=0.5, anchor="center")
     capture = cv.VideoCapture(0)
@@ -146,13 +151,13 @@ def imps_window():
 
     bkbut = ImageTk.PhotoImage(file="assets/back.png")
     bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
-                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
+                            relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
 
     three = Image.open("assets/three.png")
     two = Image.open("assets/two.png")
     one = Image.open("assets/one.png")
 
-    count_canvas = tk.Canvas(window, bg=bgcolor, height=500) # count down canvas
+    count_canvas = tk.Canvas(window, bg=bgcolor, height=500)  # count down canvas
     count_canvas.config(highlightthickness=0)
     count_canvas.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -161,7 +166,7 @@ def imps_window():
     rock_img_canvas.config(highlightthickness=0)
     rock_img_canvas.place(rely=0.5, anchor="w")
     # left_hand_in(rock_img_canvas, rock_img)
-    counting = False # set lock, avoid repeatly play
+    counting = False  # set lock, avoid repeatly play
 
     def count_down_start(event):
         nonlocal counting
@@ -169,11 +174,11 @@ def imps_window():
         img = cv_image(capture)
         result = predict_result(img)
         if counting == False:
-            counting = True #lock
+            counting = True  # lock
             count_down(count_canvas, three)
             count_down(count_canvas, two)
             count_down(count_canvas, one)
-            counting = False #unlock
+            counting = False  # unlock
 
             # nonlocal capture
             canvas.delete("all")
@@ -197,7 +202,9 @@ def imps_window():
             canvas.create_image(0, 0, anchor='nw', image=picture)
             window.update()
             window.after(100)
+
     main()
+
 
 def pve_window():
     window = tk.Tk()
@@ -212,19 +219,18 @@ def pve_window():
 
     bkbut = ImageTk.PhotoImage(file="assets/back.png")
     bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
-                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
+                            relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
 
-    canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500) #camera canvas
+    canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500)  # camera canvas
     canvas.config(highlightthickness=0)
     canvas.place(relx=0.85, rely=0.5, anchor="center")
     capture = cv.VideoCapture(0)
-
 
     three = Image.open("assets/three.png")
     two = Image.open("assets/two.png")
     one = Image.open("assets/one.png")
 
-    count_canvas = tk.Canvas(window, bg=bgcolor, height=500) # count down canvas
+    count_canvas = tk.Canvas(window, bg=bgcolor, height=500)  # count down canvas
     count_canvas.config(highlightthickness=0)
     count_canvas.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -233,7 +239,7 @@ def pve_window():
     rock_img_canvas.config(highlightthickness=0)
     rock_img_canvas.place(rely=0.5, anchor="w")
     # left_hand_in(rock_img_canvas, rock_img)
-    counting = False # set lock, avoid repeatly play
+    counting = False  # set lock, avoid repeatly play
 
     def count_down_start(event):
         nonlocal counting
@@ -241,17 +247,20 @@ def pve_window():
         img = cv_image(capture)
         result = predict_result(img)
         if counting == False:
-            counting = True #lock
+            counting = True  # lock
             count_down(count_canvas, three)
             count_down(count_canvas, two)
             count_down(count_canvas, one)
-            counting = False #unlock
+            counting = False  # unlock
 
             # nonlocal capture
             gesture = ["rock", "paper", "scissors"]
             randon_index = random.randint(0, 2)
             canvas.delete("all")
-            two_hand_in(rock_img_canvas, canvas, gesture[randon_index], result)
+            left_hand = [rock_img_canvas, gesture[randon_index]]
+            right_hand = [canvas, result]
+            hands_in(left_hand, right_hand, players=2)
+            # two_hand_in(rock_img_canvas, canvas, gesture[randon_index], result)
         else:
             return
 
@@ -263,7 +272,9 @@ def pve_window():
             canvas.create_image(0, 0, anchor='nw', image=picture)
             window.update()
             window.after(100)
+
     main()
+
 
 def pvp_prepare_window():
     window = tk.Tk()
@@ -278,7 +289,7 @@ def pvp_prepare_window():
 
     bkbut = ImageTk.PhotoImage(file="assets/back.png")
     tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
-                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
+              relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
 
     def two_person_run():
         window.destroy()
@@ -297,14 +308,15 @@ def pvp_prepare_window():
     four_person = ImageTk.PhotoImage(file="assets/4p.png")
 
     tk.Button(text="2p", image=two_person, command=two_person_run, bg="#F5F176", width=462, height=100,
-                                  relief="raised", borderwidth=0).place(relx=0.5, rely=0.2, anchor="center")
+              relief="raised", borderwidth=0).place(relx=0.5, rely=0.2, anchor="center")
 
     tk.Button(text="3p", image=three_person, command=three_person_run, bg="#F5F176", width=462, height=100,
-                                  relief="raised", borderwidth=0).place(relx=0.5, rely=0.5, anchor="center")
+              relief="raised", borderwidth=0).place(relx=0.5, rely=0.5, anchor="center")
 
     tk.Button(text="4p", image=four_person, command=four_person_run, bg="#F5F176", width=462, height=100,
-                                  relief="raised", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
+              relief="raised", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
     window.mainloop()
+
 
 def pvp_run(num):
     window = tk.Tk()
@@ -313,10 +325,18 @@ def pvp_run(num):
     window["background"] = "#F7F268"
     window.focus_set()
 
-    left_top_canvas = tk.Canvas(window, bg=bgcolor, width=300, height=300) #camera canvas
+    def back_run():
+        window.destroy()
+        root_window_run()
+
+    bkbut = ImageTk.PhotoImage(file="assets/back.png")
+    bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=65, height=65,
+                            relief="raised", borderwidth=0).place(relx=0.05, rely=0.05, anchor="center")
+
+    left_top_canvas = tk.Canvas(window, bg=bgcolor, width=300, height=300)  # camera canvas
     left_top_canvas.config(highlightthickness=0)
 
-    right_top_canvas = tk.Canvas(window, bg=bgcolor, width=300, height=300) #camera canvas
+    right_top_canvas = tk.Canvas(window, bg=bgcolor, width=300, height=300)  # camera canvas
     right_top_canvas.config(highlightthickness=0)
 
     right_bot_canvas = tk.Canvas(window, bg=bgcolor, width=300, height=300)  # camera canvas
@@ -325,25 +345,34 @@ def pvp_run(num):
     left_bot_canvas = tk.Canvas(window, bg=bgcolor, width=300, height=300)  # camera canvas
     left_bot_canvas.config(highlightthickness=0)
 
-    count_canvas = tk.Canvas(window, bg=bgcolor, height=500) # count down canvas
+    count_canvas = tk.Canvas(window, bg=bgcolor, height=500)  # count down canvas
     count_canvas.config(highlightthickness=0)
     count_canvas.place(relx=0.5, rely=0.5, anchor="center")
 
     left_top_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=300)
     left_top_hand_img_canvas.config(highlightthickness=0)
-    left_top_hand_img_canvas.place(rely=0.5, anchor="w")
+    # left_top_hand_img_canvas.place(rely=0.5, anchor="w")
 
     right_top_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=300)
     right_top_hand_img_canvas.config(highlightthickness=0)
-    right_top_hand_img_canvas.place(rely=0.5, anchor="w")
+    # right_top_hand_img_canvas.place(rely=0.5, anchor="w")
+
+    right_bot_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=300)
+    right_bot_hand_img_canvas.config(highlightthickness=0)
+    # right_bot_hand_img_canvas.place(rely=0.5, anchor="w")
+
+    left_bot_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=300)
+    left_bot_hand_img_canvas.config(highlightthickness=0)
+    # left_bot_hand_img_canvas.place(rely=0.5, anchor="w")
 
     if num == 2:
-        left_top_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=500)
-        left_top_hand_img_canvas.config(highlightthickness=0)
-        left_top_hand_img_canvas.place(rely=0.5, anchor="w")
-        right_top_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=500)
-        right_top_hand_img_canvas.config(highlightthickness=0)
-        right_top_hand_img_canvas.place(rely=0.5, anchor="w")
+        # left_top_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=500)
+        # left_top_hand_img_canvas.config(highlightthickness=0)
+        # left_top_hand_img_canvas.place(relx=0.19, rely=0.5, anchor="center")
+        #
+        # right_top_hand_img_canvas = tk.Canvas(window, bg=bgcolor, height=500)
+        # right_top_hand_img_canvas.config(highlightthickness=0)
+        # right_top_hand_img_canvas.place(relx=0.85, rely=0.5, anchor="center")
 
         left_top_canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500)
         left_top_canvas.config(highlightthickness=0)
@@ -354,11 +383,20 @@ def pvp_run(num):
         right_top_canvas.place(relx=0.85, rely=0.5, anchor="center")
 
     if num == 3:
+        # left_top_hand_img_canvas.place(relx=0.09, rely=0.5, anchor="center")
+        # right_top_hand_img_canvas.place(relx=0.89, rely=0.3, anchor="center")
+        # right_bot_hand_img_canvas.place(relx=0.89, rely=0.75, anchor="center")
+
         left_top_canvas.place(relx=0.09, rely=0.5, anchor="center")
         right_top_canvas.place(relx=0.89, rely=0.3, anchor="center")
         right_bot_canvas.place(relx=0.89, rely=0.75, anchor="center")
 
     if num == 4:
+        # left_top_hand_img_canvas.place(relx=0.09, rely=0.5, anchor="center")
+        # left_bot_hand_img_canvas.place(relx=0.09, rely=0.75, anchor="center")
+        # right_top_hand_img_canvas.place(relx=0.89, rely=0.3, anchor="center")
+        # right_bot_hand_img_canvas.place(relx=0.89, rely=0.75, anchor="center")
+
         left_top_canvas.place(relx=0.09, rely=0.3, anchor="center")
         left_bot_canvas.place(relx=0.09, rely=0.75, anchor="center")
         right_top_canvas.place(relx=0.89, rely=0.3, anchor="center")
@@ -368,33 +406,55 @@ def pvp_run(num):
     two = Image.open("assets/two.png")
     one = Image.open("assets/one.png")
     counting = False
+
     def count_down_start(event):
         nonlocal counting
         # rock_img_canvas.delete("all")
-        img = cv_image(capture)
+        lt_img = mt_player_cv_image(capture, 50, 400)
+        # cv.imshow("lt", lt_img)
+        rt_img = mt_player_cv_image(capture, 50, 50)
+        # cv.imshow("rt", rt_img)
+        lb_img = mt_player_cv_image(capture, 280, 400)
+        # cv.imshow("lb", lb_img)
+        rb_img = mt_player_cv_image(capture, 280, 50)
+        # cv.imshow("rb", rb_img)
+
+        lt_res = predict_result(lt_img)
+        rt_res = predict_result(rt_img)
+        lb_res = predict_result(lb_img)
+        rb_res = predict_result(rb_img)
         result = predict_result(img)
         if counting == False:
-            counting = True #lock
+            counting = True  # lock
             count_down(count_canvas, three)
             count_down(count_canvas, two)
             count_down(count_canvas, one)
-            counting = False #unlock
+            counting = False  # unlock
 
-            # nonlocal capture
-            gesture = ["rock", "paper", "scissors"]
-            randon_index = random.randint(0, 2)
-            canvas.delete("all")
-            two_hand_in(rock_img_canvas, canvas, gesture[randon_index], result)
+            # nonlocal captures
+
+            left_top_canvas.delete("all")
+            left_bot_canvas.delete("all")
+            right_top_canvas.delete("all")
+            right_bot_canvas.delete("all")
+
+
+            lt_hand = [left_top_canvas, lt_res]
+            rt_hand = [right_top_canvas, rt_res]
+            lb_hand = [left_bot_canvas, lb_res]
+            rb_hand = [right_bot_canvas, rb_res]
+
+            hands_in(lt_hand, rt_hand, rb_hand, lb_hand, players=num)
         else:
             return
 
     capture = cv.VideoCapture(0)
-
     while True:
         resize = 450
         if num > 2:
             resize = 300
         img = cv_image(capture)
+
         left_top = mt_player_tk_image(capture, 50, 400, resize)
         right_top = mt_player_tk_image(capture, 50, 50, resize)
         left_bot = mt_player_tk_image(capture, 280, 400, resize)
@@ -410,12 +470,14 @@ def pvp_run(num):
         window.update()
         window.after(100)
 
+
 def cv_image(capture):
     ref, frame = capture.read()
-    frame = frame[50:250,50:250]
+    frame = frame[50:250, 50:250]
     frame = cv.flip(frame, 180)
     cvimage = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
     return cvimage
+
 
 def tk_image(capture):
     cvimage = cv_image(capture)
@@ -425,22 +487,26 @@ def tk_image(capture):
     tkImage = ImageTk.PhotoImage(image=pilImage)
     return tkImage
 
-def mt_player_tk_image(capture,x,y,resize):
+def mt_player_cv_image(capture, x, y):
     ref, frame = capture.read()
-    frame = frame[x:x+200, y:y+200]
+    frame = frame[x:x + 200, y:y + 200]
     frame = cv.flip(frame, 180)
     cvimage = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+    return cvimage
 
+def mt_player_tk_image(capture, x, y, resize):
+    cvimage = mt_player_cv_image(capture, x, y)
     pilImage = Image.fromarray(cvimage)
     pilImage = pilImage.resize((resize, resize), Image.ANTIALIAS)
     tkImage = ImageTk.PhotoImage(image=pilImage)
     return tkImage
 
+
 def count_down(canvas, image):
     minx = 50
     maxx = 250
-    for i in range(minx, maxx+1):
-        image = image.resize((i, i*2))
+    for i in range(minx, maxx + 1):
+        image = image.resize((i, i * 2))
         tkimage = ImageTk.PhotoImage(image)
         canvas.create_image(180, 250, anchor='center', image=tkimage)
         canvas.update()
@@ -448,7 +514,6 @@ def count_down(canvas, image):
 
 
 def left_hand_in(canvas, image):
-
     global tkimage
     start = -50
     end = 180
@@ -457,6 +522,7 @@ def left_hand_in(canvas, image):
         canvas.create_image(i, 250, anchor='center', image=tkimage)
         canvas.update()
     # canvas.img = tkimage
+
 
 def left_gesture(canvas, gesture):
     img = ""
@@ -468,8 +534,10 @@ def left_gesture(canvas, gesture):
         img = Image.open("assets/scissors.png")
 
     left_hand_in(canvas, img)
+
+
 def reconize_gesture(gesture):
-    img = ""
+    global img
     if gesture == "rock":
         img = Image.open("assets/rock.png")
     elif gesture == "paper":
@@ -478,8 +546,8 @@ def reconize_gesture(gesture):
         img = Image.open("assets/scissors.png")
     return img
 
-def two_hand_in(left_canvas, right_canvas, left, right):
 
+def two_hand_in(left_canvas, right_canvas, left, right):
     global left_tkimage
     global right_tkimage
     step = 210
@@ -493,9 +561,8 @@ def two_hand_in(left_canvas, right_canvas, left, right):
         left_tkimage = ImageTk.PhotoImage(left)
         right_tkimage = ImageTk.PhotoImage(right)
 
-
-        left_canvas.create_image(-40+i, 250, anchor='center', image=left_tkimage)
-        right_canvas.create_image(470-i, 250, anchor='center', image=right_tkimage)
+        left_canvas.create_image(-40 + i, 250, anchor='center', image=left_tkimage)
+        right_canvas.create_image(470 - i, 250, anchor='center', image=right_tkimage)
 
         left_canvas.update()
         right_canvas.update()
@@ -506,9 +573,106 @@ def two_hand_in(left_canvas, right_canvas, left, right):
     # canvas.img = tkimage
 
 
+def hands_in(*gestures, players):
+    global lt_canvas, rt_canvas, rb_canvas, lb_canvas
+    global lt_hand, rt_hand, rb_hand, lb_hand
+
+    global lt_hand_image
+    global rt_hand_image
+    global rb_hand_image
+    global lb_hand_image
+
+
+    lt_canvas, lt_hand = get_data_from_list(gestures, 0)
+    rt_canvas, rt_hand = get_data_from_list(gestures, 1)
+    if players >= 3:
+        rb_canvas, rb_hand = get_data_from_list(gestures, 2)
+    if players == 4:
+        lb_canvas, lb_hand = get_data_from_list(gestures, 3)
+
+    # try:
+    #     lt_canvas, lt_hand = get_data_from_list(gestures, 0)
+    #     rt_canvas, rt_hand = get_data_from_list(gestures, 1)
+    #     rb_canvas, rb_hand = get_data_from_list(gestures, 2)
+    #     lb_canvas, lb_hand = get_data_from_list(gestures, 3)
+    #
+    # except:
+    #     pass
+
+    hi = 416
+    len = 402
+    lx = -40
+    ly = 250
+
+    rx = 470
+    ry = 250
+    if players >=3:
+        hi = 280
+        len = 280
+
+        lx = -60
+        ly = 140
+
+        rx = 400
+        ry = 140
+
+    lt_hand = reconize_gesture(lt_hand).resize((hi, len))
+
+    rt_hand = reconize_gesture(rt_hand).resize((hi, len))
+    rt_hand = rotate_hand(rt_hand)
+
+    if players >= 3:
+        rb_hand = reconize_gesture(rb_hand).resize((hi, len))
+        rb_hand = rotate_hand(rb_hand)
+    if players == 4:
+        lb_hand = reconize_gesture(lb_hand).resize((hi, len))
+
+    step = 210
+    i = 0
+
+
+
+    while i < step:
+        lt_hand_image = ImageTk.PhotoImage(lt_hand)
+        lt_canvas.create_image(lx + i, ly, anchor='center', image=lt_hand_image)
+        lt_canvas.update()
+
+        rt_hand_image = ImageTk.PhotoImage(rt_hand)
+        rt_canvas.create_image(rx - i, ry, anchor='center', image=rt_hand_image)
+        rt_canvas.update()
+
+        if players >= 3:
+            rb_hand_image = ImageTk.PhotoImage(rb_hand)
+            rb_canvas.create_image(rx - i, ry, anchor='center', image=rb_hand_image)
+            rb_canvas.update()
+
+        if players == 4:
+            lb_hand_image = ImageTk.PhotoImage(lb_hand)
+            lb_canvas.create_image(lx + i, ly, anchor='center', image=lb_hand_image)
+            lb_canvas.update()
+        i += 2
+    rt_canvas.after(1000)
+    try:
+        rt_canvas.delete("all")
+        lt_canvas.delete("all")
+        rb_canvas.delete("all")
+        lb_canvas.delete("all")
+    except:
+        pass
+
+def get_data_from_list(list, num):
+    i = 0
+    for k in list:
+        if i == num:
+            return k[0], k[1]
+        i += 1
+        if i >= len(list):
+            return
+
+
+def rotate_hand(hand):
+    right = hand.rotate(180)
+    return right.transpose(Image.FLIP_TOP_BOTTOM)
+
+
 root_window_run()
-
-
-
-
-
