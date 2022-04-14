@@ -444,9 +444,11 @@ def pvp_run(num):
             lb_hand = [left_bot_canvas, lb_res]
             rb_hand = [right_bot_canvas, rb_res]
 
+            print(lt_res, rt_res, rb_res, lb_res,)
             hands_in(lt_hand, rt_hand, rb_hand, lb_hand, players=num)
         else:
             return
+        print(who_win(lt_res, rt_res, rb_res, lb_res, num=num))
 
     capture = cv.VideoCapture(0)
     while True:
@@ -668,6 +670,64 @@ def get_data_from_list(list, num):
         i += 1
         if i >= len(list):
             return
+
+def who_win(*player_hand, num):
+    hand_list = {}
+    index = 1
+    count = 0
+    num_count = 0
+
+    for p in player_hand:  # if there are more than 2 hands and only 1 hand, dead heat
+        if p not in hand_list.values():
+            hand_list[index] = p
+            count += 1
+
+        if count > 2:
+            return 0
+        index += 1
+        num_count += 1
+        if num_count > num:
+            break
+
+    if count == 1:
+        return 0
+
+    player_list = ['lt', 'rt', 'rb', 'lb']  # only two hand, then check who win
+    player_hand_table = {}
+    for i in range(num):
+        player_hand_table[player_list[i]] = player_hand[i]
+    win_hand = player_hand_table['lt']
+    lose_hand = ""
+
+    for h in player_hand_table.values():
+        if h != win_hand:
+            lose_hand = h
+
+    if compare_hand(win_hand, lose_hand) == 2:
+        tmp = win_hand
+        win_hand = lose_hand
+        lose_hand = tmp
+    winner_list = []
+    index = 0
+    for hand in player_hand_table.values():
+        if hand == win_hand:
+            winner_list.append(index)
+        index += 1
+    return winner_list
+def compare_hand(hand_a, hand_b):
+
+    hand_table = {"rock":"scissors", "paper":"rock", "scissors":"paper"}
+
+    if hand_a == hand_b:
+        return 0
+
+    if hand_table[hand_a] == hand_b:
+        return 1
+    else:
+        return 2
+
+
+
 
 
 def rotate_hand(hand):
