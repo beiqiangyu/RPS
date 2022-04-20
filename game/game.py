@@ -10,11 +10,17 @@ from tensorflow.keras.preprocessing import image
 from processImage import recognizeSkin
 from concurrent.futures import ThreadPoolExecutor
 import threading
+import pygame as py
 
 from processImage import model_recognizeSkin
 
 bgcolor = "#F7F268"
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+
+
+py.mixer.init()
+py.mixer.music.load(r'assets/bgm/main_theme.mp3')
+
 
 # with open('../model.json', 'r') as f:
 #     model_json = f.read()
@@ -37,7 +43,6 @@ with open('../skin_v4_1_model.json', 'r') as f:
 model = model_from_json(model_json)
 model.load_weights("../skin_v4_1_model.h5")
 
-
 # with open('../skin_v3_simple_dataset_model.json', 'r') as f:
 #     model_json = f.read()
 # model = model_from_json(model_json)
@@ -53,7 +58,7 @@ model.load_weights("../skin_v4_1_model.h5")
 #     processImage = cv.cvtColor(processImage, cv.COLOR_BGR2BGRA)
 #     processImage = cv.resize(processImage, (200, 200), interpolation=cv.INTER_AREA)
 #     processImage = image.img_to_array(processImage)
-#     processImage = np.expand_dims(processImage, axis=0)
+#     processImage = np.expand_disssms(processImage, axis=0)
 #     result = model.predict(processImage)
 #
 #     result_index = np.argmax(result)
@@ -63,7 +68,7 @@ def predict_result(img):
     result_list = ["paper", "rock", "scissors"]
     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
     processImage = recognizeSkin(img)
-    plt.imshow(processImage)
+    # plt.imshow(processImage)
     plt.show()
     # processImage = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     processImage = cv.resize(processImage, (200, 200), interpolation=cv.INTER_AREA)
@@ -83,7 +88,6 @@ def predict_result(img):
     result = result_list[result_index]
     return result
 
-
 def get_heightest_score():
     f = open("assets/score.txt", "r")
     score = f.read()
@@ -92,6 +96,18 @@ def get_heightest_score():
 
 
 def root_window_run():
+
+    def bgm_btn(event):
+        if mute_label['text'] == "Mute":
+            mute_label.configure(image=img2)
+            py.mixer.music.stop()
+            mute_label['text'] = "Unmute"
+        else:
+            mute_label.configure(image=img1)
+            mute_label['text'] = "Mute"
+            py.mixer.music.play(-1, 10)
+
+
     def pve_run():
         root_window.destroy()
         pve_window()
@@ -108,27 +124,61 @@ def root_window_run():
     root_window.title('42028 Deep Learning and Convolutional Neural Network Assignment 3 -- RPS GAMING')
     root_window.geometry('1280x720')
     # root_window.geometry('1920x1080')
-    # root_window["background"] = "#F7F268"
+    root_window["background"] = "#F7F268"
 
-    # set memu background
-    background = ImageTk.PhotoImage(file="assets/background.jpg")
-    bglabel = tk.Label(root_window, image=background).pack()
+    py.mixer.music.play(-1, 10)
+    img1 = tk.PhotoImage(file="assets/mute.png")
+    img2 = tk.PhotoImage(file="assets/unmute.png")
+
+    # lines down below is about create an gif anime in main page
+    numIdx = 9  # fram number of gif
+    # fill 9 frames to "frames"
+    frames = [tk.PhotoImage(file='assets/main_top.gif', format='gif -index %i' % (i)) for i in range(numIdx)]
+
+    def update(idx):  # timer function for gif animate
+        frame = frames[idx]
+        idx += 1  # index of frame number：iterate 9 frames
+        anime_label.configure(image=frame)  # show the current frame image
+        root_window.after(200, update, idx % numIdx)  # continue after 0.2s
+
+
+    # create anime label
+    anime_label = tk.Label(root_window, bg="#F7F268",width=200,height=200)
+    anime_label.place(relx=0.5, rely=0.2,anchor="center")
+    root_window.after(0, update, 0)
+
+    # create mute label
+    mute_label = tk.Label(root_window, image=img1, text="Mute", font=("Showcard Gothic", 15), bg="#F7F268")
+    mute_label.place(relx=0.05, rely=0.05, anchor="center")
+    mute_label.bind("<Button-1>", bgm_btn)
+
+
+
+    #set memu background
+    # background = ImageTk.PhotoImage(file="assets/background.jpg")
+    # bglabel = tk.Label(root_window, image=background).pack()
+    background = tk.Label(root_window,text="Rock Paper Scissor",fg ='RoyalBlue',bg="#F7F268", font=("Eras Bold ITC",65), justify='center').place(relx=0.5, rely=0.45, anchor="center")
 
     # set score
     score = "Highest Score: " + str(get_heightest_score())
-    board = tk.Message(text=score, font=("Gabriola", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
+    board = tk.Message(text=score, font=("Copperplate Gothic Bold", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
 
-    # set memu button
-    pvest = ImageTk.PhotoImage(file="assets/pve.png")
-    pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
-    impst = ImageTk.PhotoImage(file="assets/imp.png")
 
-    rank_start_button = tk.Button(text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46,
-                                  relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
-    pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46,
-                                 relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
-    imps_start_button = tk.Button(text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46,
-                                  relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
+    #set memu button
+    # pvest = ImageTk.PhotoImage(file="assets/pve.png")
+    # pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
+    # impst = ImageTk.PhotoImage(file="assets/imp.png")
+
+
+    # rank_start_button = tk.Button( text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46, relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
+    # pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
+    # imps_start_button = tk.Button( text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
+    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,).place(relx=0.5, rely=0.62, anchor="center")
+    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.75, anchor="center")
+    imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.88, anchor="center")
+
+
+
 
     root_window.mainloop()
 
@@ -151,7 +201,7 @@ def imps_window():
 
     bkbut = ImageTk.PhotoImage(file="assets/back.png")
     bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
-                            relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
+                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
 
     three = Image.open("assets/three.png")
     two = Image.open("assets/two.png")
@@ -184,12 +234,15 @@ def imps_window():
             canvas.delete("all")
             if result == "rock":
                 two_hand_in(rock_img_canvas, canvas, "paper", result)
+                print("winner: ", who_win("paper", result, num=2))
                 # left_gesture(rock_img_canvas, "paper")
             if result == "paper":
                 two_hand_in(rock_img_canvas, canvas, "scissors", result)
                 # left_gesture(rock_img_canvas, "scissors")
+                print("winner: ", who_win("scissors", result, num=2))
             if result == "scissors":
                 two_hand_in(rock_img_canvas, canvas, "rock", result)
+                print("winner: ", who_win("rock", result, num=2))
                 # left_gesture(rock_img_canvas, "rock")
         else:
             return
@@ -219,9 +272,9 @@ def pve_window():
 
     bkbut = ImageTk.PhotoImage(file="assets/back.png")
     bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
-                            relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
+                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
 
-    canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500)  # camera canvas
+    canvas = tk.Canvas(window, bg=bgcolor, width=500, height=500) #camera canvas
     canvas.config(highlightthickness=0)
     canvas.place(relx=0.85, rely=0.5, anchor="center")
     capture = cv.VideoCapture(0)
@@ -257,9 +310,11 @@ def pve_window():
             gesture = ["rock", "paper", "scissors"]
             randon_index = random.randint(0, 2)
             canvas.delete("all")
-            left_hand = [rock_img_canvas, gesture[randon_index]]
+            left_hand_res = gesture[randon_index]
+            left_hand = [rock_img_canvas, left_hand_res]
             right_hand = [canvas, result]
             hands_in(left_hand, right_hand, players=2)
+            print("winner: ", who_win(left_hand_res, result, num=2))
             # two_hand_in(rock_img_canvas, canvas, gesture[randon_index], result)
         else:
             return
@@ -448,7 +503,7 @@ def pvp_run(num):
             hands_in(lt_hand, rt_hand, rb_hand, lb_hand, players=num)
         else:
             return
-        print(who_win(lt_res, rt_res, rb_res, lb_res, num=num))
+        print("winner", who_win(lt_res, rt_res, rb_res, lb_res, num=num))
 
     capture = cv.VideoCapture(0)
     while True:
@@ -683,14 +738,14 @@ def who_win(*player_hand, num):
             count += 1
 
         if count > 2:
-            return 0
+            return -1
         index += 1
         num_count += 1
         if num_count > num:
             break
 
     if count == 1:
-        return 0
+        return -1
 
     player_list = ['lt', 'rt', 'rb', 'lb']  # only two hand, then check who win
     player_hand_table = {}
@@ -719,7 +774,7 @@ def compare_hand(hand_a, hand_b):
     hand_table = {"rock":"scissors", "paper":"rock", "scissors":"paper"}
 
     if hand_a == hand_b:
-        return 0
+        return -1
 
     if hand_table[hand_a] == hand_b:
         return 1
