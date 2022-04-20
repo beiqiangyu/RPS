@@ -10,10 +10,16 @@ from tensorflow.keras.preprocessing import image
 from processImage import recognizeSkin
 from concurrent.futures import ThreadPoolExecutor
 import threading
+import pygame as py
 
 from processImage import model_recognizeSkin
 bgcolor = "#F7F268"
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+
+
+py.mixer.init()
+py.mixer.music.load(r'assets/bgm/main_theme.mp3')
+
 
 # with open('../model.json', 'r') as f:
 #     model_json = f.read()
@@ -89,6 +95,17 @@ def get_heightest_score():
 
 def root_window_run():
 
+    def bgm_btn(event):
+        if mute_label['text'] == "Mute":
+            mute_label.configure(image=img2)
+            py.mixer.music.stop()
+            mute_label['text'] = "Unmute"
+        else:
+            mute_label.configure(image=img1)
+            mute_label['text'] = "Mute"
+            py.mixer.music.play(-1, 10)
+
+
     def pve_run():
         root_window.destroy()
         pve_window()
@@ -105,26 +122,61 @@ def root_window_run():
     root_window.title('42028 Deep Learning and Convolutional Neural Network Assignment 3 -- RPS GAMING')
     root_window.geometry('1280x720')
     # root_window.geometry('1920x1080')
-    # root_window["background"] = "#F7F268"
+    root_window["background"] = "#F7F268"
+
+    py.mixer.music.play(-1, 10)
+    img1 = tk.PhotoImage(file="assets/mute.png")
+    img2 = tk.PhotoImage(file="assets/unmute.png")
+
+    # lines down below is about create an gif anime in main page
+    numIdx = 9  # fram number of gif
+    # fill 9 frames to "frames"
+    frames = [tk.PhotoImage(file='assets/main_top.gif', format='gif -index %i' % (i)) for i in range(numIdx)]
+
+    def update(idx):  # timer function for gif animate
+        frame = frames[idx]
+        idx += 1  # index of frame number：iterate 9 frames
+        anime_label.configure(image=frame)  # show the current frame image
+        root_window.after(200, update, idx % numIdx)  # continue after 0.2s
+
+
+    # create anime label
+    anime_label = tk.Label(root_window, bg="#F7F268",width=200,height=200)
+    anime_label.place(relx=0.5, rely=0.2,anchor="center")
+    root_window.after(0, update, 0)
+
+    # create mute label
+    mute_label = tk.Label(root_window, image=img1, text="Mute", font=("Showcard Gothic", 15), bg="#F7F268")
+    mute_label.place(relx=0.05, rely=0.05, anchor="center")
+    mute_label.bind("<Button-1>", bgm_btn)
+
+
 
     #set memu background
-    background = ImageTk.PhotoImage(file="assets/background.jpg")
-    bglabel = tk.Label(root_window, image=background).pack()
+    # background = ImageTk.PhotoImage(file="assets/background.jpg")
+    # bglabel = tk.Label(root_window, image=background).pack()
+    background = tk.Label(root_window,text="Rock Paper Scissor",fg ='RoyalBlue',bg="#F7F268", font=("Eras Bold ITC",65), justify='center').place(relx=0.5, rely=0.45, anchor="center")
 
     #set score
     score = "Highest Score: " + str(get_heightest_score())
-    board = tk.Message(text=score, font=("Gabriola", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
+    board = tk.Message(text=score, font=("Copperplate Gothic Bold", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
 
 
     #set memu button
-    pvest = ImageTk.PhotoImage(file="assets/pve.png")
-    pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
-    impst = ImageTk.PhotoImage(file="assets/imp.png")
+    # pvest = ImageTk.PhotoImage(file="assets/pve.png")
+    # pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
+    # impst = ImageTk.PhotoImage(file="assets/imp.png")
 
 
-    rank_start_button = tk.Button( text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46, relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
-    pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
-    imps_start_button = tk.Button( text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
+    # rank_start_button = tk.Button( text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46, relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
+    # pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
+    # imps_start_button = tk.Button( text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
+    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,).place(relx=0.5, rely=0.62, anchor="center")
+    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.75, anchor="center")
+    imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.88, anchor="center")
+
+
+
 
     root_window.mainloop()
 
