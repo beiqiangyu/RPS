@@ -95,6 +95,11 @@ def get_heightest_score():
     f.close()
     return score
 
+def set_heightest_score(score):
+    f = open("assets/score.txt", "w")
+    f. write(str(score))
+    f.close()
+
 
 def root_window_run():
 
@@ -162,7 +167,7 @@ def root_window_run():
 
     # set score
     score = "Highest Score: " + str(get_heightest_score())
-    board = tk.Message(text=score, font=("Copperplate Gothic Bold", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
+    board = tk.Message(text=score, width=300, font=("Copperplate Gothic Bold", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
 
 
     #set memu button
@@ -283,6 +288,12 @@ def pve_window():
     window["background"] = "#F7F268"
     window.focus_set()
 
+    # left_score = 0
+    # right_score = 0
+    # score = str(left_score) + " : " + str(right_score)
+    score = 0
+    score_board = tk.Label(window, text=str(score), background=bgcolor, fg="#707070", font=("Gabriola", 100))
+    score_board.place(relx=0.5, rely=0.1 ,anchor="center")
     def back_run():
         window.destroy()
         root_window_run()
@@ -331,15 +342,29 @@ def pve_window():
             left_hand = [rock_img_canvas, left_hand_res]
             right_hand = [canvas, result]
             hands_in(left_hand, right_hand, players=2)
-            Animation.pk_result(window, who_win(left_hand_res, result, num=2))
-            print("winner: ", who_win(left_hand_res, result, num=2))
+            res = who_win(left_hand_res, result, num=2)
+            Animation.pk_result(window, res)
+            print("winner: ", res)
+            nonlocal score
+            if res[0] == 0:
+                score = 0
+                score_board.config(text=score)
+            elif res[0] == 1:
+                score += 1
+                height_score = get_heightest_score()
+                score_board.config(text=score)
+                if score > int(height_score):
+                    set_heightest_score(str(score))
+                    score_board.config(text=score, fg="#FF0000")
+
+
             # two_hand_in(rock_img_canvas, canvas, gesture[randon_index], result)
         else:
             return
 
     def main():
         while True:
-            img = cv_image(capture)
+            simg = cv_image(capture)
             window.bind('<KeyPress-s>', count_down_start)
             picture = mt_player_tk_image(capture, 50, 50, 600)
             canvas.create_image(0, 0, anchor='nw', image=picture)
