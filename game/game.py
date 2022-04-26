@@ -183,9 +183,6 @@ def root_window_run():
     pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.75, anchor="center")
     imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.88, anchor="center")
 
-
-
-
     root_window.mainloop()
 
 
@@ -195,7 +192,7 @@ def imps_window():
     # window.geometry('1280x720')
     window.attributes('-fullscreen', True)
     window["background"] = "#F7F268"
-    window.focus_set()
+    window.focus_force()
 
     def back_run():
         window.destroy()
@@ -286,7 +283,7 @@ def pve_window():
     # window.geometry('1280x720')
     window.attributes('-fullscreen', True)
     window["background"] = "#F7F268"
-    window.focus_set()
+    window.focus_force()
 
     # left_score = 0
     # right_score = 0
@@ -422,7 +419,7 @@ def pvp_run(num):
     window.attributes('-fullscreen', True)
     # window.geometry('1280x720')
     window["background"] = "#F7F268"
-    window.focus_set()
+    window.focus_force()
 
     def back_run():
         window.destroy()
