@@ -170,18 +170,22 @@ def root_window_run():
     board = tk.Message(text=score, width=300, font=("Copperplate Gothic Bold", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
 
 
-    #set memu button
-    # pvest = ImageTk.PhotoImage(file="assets/pve.png")
-    # pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
-    # impst = ImageTk.PhotoImage(file="assets/imp.png")
+    # three buttons
+    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,)
+    rank_start_button.place(relx=0.5, rely=0.62, anchor="center")
+    rank_start_button.bind("<Motion>", movement)
+    rank_start_button.bind("<Leave>", leave)
 
+    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10)
+    pvp_start_button.place(relx=0.5, rely=0.75, anchor="center")
+    pvp_start_button.bind("<Motion>", movement)
+    pvp_start_button.bind("<Leave>", leave)
 
-    # rank_start_button = tk.Button( text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46, relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
-    # pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
-    # imps_start_button = tk.Button( text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
-    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,).place(relx=0.5, rely=0.62, anchor="center")
-    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.75, anchor="center")
-    imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.88, anchor="center")
+    imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10)
+    imps_start_button.place(relx=0.5, rely=0.88, anchor="center")
+    imps_start_button.bind("<Motion>", movement)
+    imps_start_button.bind("<Leave>", leave)
+
 
     root_window.mainloop()
 
@@ -193,34 +197,6 @@ def imps_window():
     window.attributes('-fullscreen', True)
     window["background"] = "#F7F268"
     window.focus_force()
-
-    def back_run():
-        window.destroy()
-        root_window_run()
-
-    bkbut = ImageTk.PhotoImage(file="assets/back.png")
-    bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
-                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
-
-    canvas = tk.Canvas(window, bg=bgcolor, width=600, height=600)  # camera canvas
-    canvas.config(highlightthickness=0)
-    canvas.place(relx=0.85, rely=0.5, anchor="center")
-    capture = cv.VideoCapture(0)
-
-    three = Image.open("assets/three.png")
-    two = Image.open("assets/two.png")
-    one = Image.open("assets/one.png")
-
-    count_canvas = tk.Canvas(window, bg=bgcolor, height=500)  # count down canvas
-    count_canvas.config(highlightthickness=0)
-    count_canvas.place(relx=0.5, rely=0.5, anchor="center")
-
-    rock_img = Image.open("assets/rock.png")
-    rock_img_canvas = tk.Canvas(window, bg=bgcolor, width=600, height=600)
-    rock_img_canvas.config(highlightthickness=0)
-    rock_img_canvas.place(rely=0.5, anchor="w")
-    # left_hand_in(rock_img_canvas, rock_img)
-    counting = False  # set lock, avoid repeatly play
 
     def count_down_start(event):
         nonlocal counting
@@ -265,32 +241,7 @@ def imps_window():
             Animation.pk_result(window, tmp)
         else:
             return
-    def main():
-        while True:
-            img = cv_image(capture)
-            window.bind('<KeyPress-s>', count_down_start)
-            picture = mt_player_tk_image(capture, 50, 50, 600)
-            canvas.create_image(0, 0, anchor='nw', image=picture)
-            window.update()
-            window.after(100)
 
-    main()
-
-
-def pve_window():
-    window = tk.Tk()
-    window.title('42028 Deep Learning and Convolutional Neural Network Assignment 3 -- RPS GAMING  Rank')
-    # window.geometry('1280x720')
-    window.attributes('-fullscreen', True)
-    window["background"] = "#F7F268"
-    window.focus_force()
-
-    # left_score = 0
-    # right_score = 0
-    # score = str(left_score) + " : " + str(right_score)
-    score = 0
-    score_board = tk.Label(window, text=str(score), background=bgcolor, fg="#707070", font=("Gabriola", 100))
-    score_board.place(relx=0.5, rely=0.1 ,anchor="center")
     def back_run():
         window.destroy()
         root_window_run()
@@ -303,6 +254,14 @@ def pve_window():
     canvas.config(highlightthickness=0)
     canvas.place(relx=0.85, rely=0.5, anchor="center")
     capture = cv.VideoCapture(0)
+
+    #create capture button
+    capture_btn = tk.Button(text="Start Capture", relief="groove",font=("Eras Bold ITC",30),bg="#f0f0f0" ,width=10)
+    capture_btn.place(relx=0.5,rely=0.93,anchor="center")
+    capture_btn.bind("<Button-1>",count_down_start)
+    capture_btn.bind("<Motion>",movement)
+    capture_btn.bind("<Leave>",leave)
+
 
     three = Image.open("assets/three.png")
     two = Image.open("assets/two.png")
@@ -318,6 +277,21 @@ def pve_window():
     rock_img_canvas.place(rely=0.5, anchor="w")
     # left_hand_in(rock_img_canvas, rock_img)
     counting = False  # set lock, avoid repeatly play
+
+
+    def main():
+        while True:
+            img = cv_image(capture)
+            window.bind('<KeyPress-s>', count_down_start)
+            picture = mt_player_tk_image(capture, 50, 50, 600)
+            canvas.create_image(0, 0, anchor='nw', image=picture)
+            window.update()
+            window.after(100)
+
+    main()
+
+
+def pve_window():
 
     def count_down_start(event):
         nonlocal counting
@@ -359,6 +333,56 @@ def pve_window():
         else:
             return
 
+    window = tk.Tk()
+    window.title('42028 Deep Learning and Convolutional Neural Network Assignment 3 -- RPS GAMING  Rank')
+    # window.geometry('1280x720')
+    window.attributes('-fullscreen', True)
+    window["background"] = "#F7F268"
+    window.focus_force()
+
+    # left_score = 0
+    # right_score = 0
+    # score = str(left_score) + " : " + str(right_score)
+    score = 0
+    score_board = tk.Label(window, text=str(score), background=bgcolor, fg="#707070", font=("Gabriola", 100))
+    score_board.place(relx=0.5, rely=0.1 ,anchor="center")
+    def back_run():
+        window.destroy()
+        root_window_run()
+
+    bkbut = ImageTk.PhotoImage(file="assets/back.png")
+    bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
+                                  relief="raised", borderwidth=0).place(relx=0.05, rely=0.1, anchor="center")
+
+    #create capture button
+    capture_btn = tk.Button(text="Start Capture", relief="groove",font=("Eras Bold ITC",30),bg="#f0f0f0" ,width=10)
+    capture_btn.place(relx=0.5,rely=0.93,anchor="center")
+    capture_btn.bind("<Button-1>",count_down_start)
+    capture_btn.bind("<Motion>",movement)
+    capture_btn.bind("<Leave>",leave)
+
+    canvas = tk.Canvas(window, bg=bgcolor, width=600, height=600)  # camera canvas
+    canvas.config(highlightthickness=0)
+    canvas.place(relx=0.85, rely=0.5, anchor="center")
+    capture = cv.VideoCapture(0)
+
+    three = Image.open("assets/three.png")
+    two = Image.open("assets/two.png")
+    one = Image.open("assets/one.png")
+
+    count_canvas = tk.Canvas(window, bg=bgcolor, height=500)  # count down canvas
+    count_canvas.config(highlightthickness=0)
+    count_canvas.place(relx=0.5, rely=0.5, anchor="center")
+
+    rock_img = Image.open("assets/rock.png")
+    rock_img_canvas = tk.Canvas(window, bg=bgcolor, width=600, height=600)
+    rock_img_canvas.config(highlightthickness=0)
+    rock_img_canvas.place(rely=0.5, anchor="w")
+    # left_hand_in(rock_img_canvas, rock_img)
+    counting = False  # set lock, avoid repeatly play
+
+
+
     def main():
         while True:
             simg = cv_image(capture)
@@ -398,22 +422,71 @@ def pvp_prepare_window():
         window.destroy()
         pvp_run(4)
 
-    two_person = ImageTk.PhotoImage(file="assets/2p.png")
-    three_person = ImageTk.PhotoImage(file="assets/3p.png")
-    four_person = ImageTk.PhotoImage(file="assets/4p.png")
+    one_p = tk.Button(text="2 player",command=two_person_run,font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,
+                                  relief="raised")
+    one_p.place(relx=0.5, rely=0.2, anchor="center")
+    one_p.bind("<Motion>",movement)
+    one_p.bind("<Leave>",leave)
 
-    tk.Button(text="2p", image=two_person, command=two_person_run, bg="#F5F176", width=462, height=100,
-              relief="raised", borderwidth=0).place(relx=0.5, rely=0.2, anchor="center")
+    two_p = tk.Button(text="3 player", command=three_person_run, font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,
+                                  relief="raised")
+    two_p.place(relx=0.5, rely=0.5, anchor="center")
+    two_p.bind("<Motion>",movement)
+    two_p.bind("<Leave>",leave)
 
-    tk.Button(text="3p", image=three_person, command=three_person_run, bg="#F5F176", width=462, height=100,
-              relief="raised", borderwidth=0).place(relx=0.5, rely=0.5, anchor="center")
-
-    tk.Button(text="4p", image=four_person, command=four_person_run, bg="#F5F176", width=462, height=100,
-              relief="raised", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
-    window.mainloop()
+    three_p = tk.Button(text="4 player", command=four_person_run, font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,
+                                  relief="raised")
+    three_p.place(relx=0.5, rely=0.8, anchor="center")
+    three_p.bind("<Motion>",movement)
+    three_p.bind("<Leave>",leave)
 
 
 def pvp_run(num):
+
+    def count_down_start(event):
+        nonlocal counting
+        # rock_img_canvas.delete("all")
+        lt_img = mt_player_cv_image(capture, 50, 400)
+        # cv.imshow("lt", lt_img)
+        rt_img = mt_player_cv_image(capture, 50, 50)
+        # cv.imshow("rt", rt_img)
+        lb_img = mt_player_cv_image(capture, 280, 400)
+        # cv.imshow("lb", lb_img)
+        rb_img = mt_player_cv_image(capture, 280, 50)
+        # cv.imshow("rb", rb_img)
+
+        lt_res = predict_result(lt_img)
+        rt_res = predict_result(rt_img)
+        lb_res = predict_result(lb_img)
+        rb_res = predict_result(rb_img)
+        result = predict_result(img)
+        if counting == False:
+            counting = True  # lock
+            count_down(count_canvas, three)
+            count_down(count_canvas, two)
+            count_down(count_canvas, one)
+            counting = False  # unlock
+
+            # nonlocal captures
+
+            left_top_canvas.delete("all")
+            left_bot_canvas.delete("all")
+            right_top_canvas.delete("all")
+            right_bot_canvas.delete("all")
+
+
+            lt_hand = [left_top_canvas, lt_res]
+            rt_hand = [right_top_canvas, rt_res]
+            lb_hand = [left_bot_canvas, lb_res]
+            rb_hand = [right_bot_canvas, rb_res]
+
+            print(lt_res, rt_res, rb_res, lb_res,)
+            hands_in(lt_hand, rt_hand, rb_hand, lb_hand, players=num)
+        else:
+            return
+        print("winner", who_win(lt_res, rt_res, rb_res, lb_res, num=num))
+
+
     window = tk.Tk()
     window.title('42028 Deep Learning and Convolutional Neural Network Assignment 3 -- PVP')
     window.attributes('-fullscreen', True)
@@ -506,48 +579,6 @@ def pvp_run(num):
     one = Image.open("assets/one.png")
     counting = False
 
-    def count_down_start(event):
-        nonlocal counting
-        # rock_img_canvas.delete("all")
-        lt_img = mt_player_cv_image(capture, 50, 400)
-        # cv.imshow("lt", lt_img)
-        rt_img = mt_player_cv_image(capture, 50, 50)
-        # cv.imshow("rt", rt_img)
-        lb_img = mt_player_cv_image(capture, 280, 400)
-        # cv.imshow("lb", lb_img)
-        rb_img = mt_player_cv_image(capture, 280, 50)
-        # cv.imshow("rb", rb_img)
-
-        lt_res = predict_result(lt_img)
-        rt_res = predict_result(rt_img)
-        lb_res = predict_result(lb_img)
-        rb_res = predict_result(rb_img)
-        result = predict_result(img)
-        if counting == False:
-            counting = True  # lock
-            count_down(count_canvas, three)
-            count_down(count_canvas, two)
-            count_down(count_canvas, one)
-            counting = False  # unlock
-
-            # nonlocal captures
-
-            left_top_canvas.delete("all")
-            left_bot_canvas.delete("all")
-            right_top_canvas.delete("all")
-            right_bot_canvas.delete("all")
-
-
-            lt_hand = [left_top_canvas, lt_res]
-            rt_hand = [right_top_canvas, rt_res]
-            lb_hand = [left_bot_canvas, lb_res]
-            rb_hand = [right_bot_canvas, rb_res]
-
-            print(lt_res, rt_res, rb_res, lb_res,)
-            hands_in(lt_hand, rt_hand, rb_hand, lb_hand, players=num)
-        else:
-            return
-        print("winner", who_win(lt_res, rt_res, rb_res, lb_res, num=num))
 
     capture = cv.VideoCapture(0)
     p1syb = ImageTk.PhotoImage(file="assets/p1.png")
@@ -847,6 +878,14 @@ def compare_hand(hand_a, hand_b):
 
 
 
+# when mouse move to button, it turns bigger
+def movement(event):
+
+    event.widget['font'] = ("Eras Bold ITC", 33)
+
+# when mouse move to button, it change smaller
+def leave(event):
+    event.widget['font'] = ("Eras Bold ITC", 30)
 
 
 def rotate_hand(hand):
