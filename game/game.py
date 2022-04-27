@@ -170,18 +170,22 @@ def root_window_run():
     board = tk.Message(text=score, width=300, font=("Copperplate Gothic Bold", 30, "italic"), bg="#F7F268").place(relx=0.8, rely=0)
 
 
-    #set memu button
-    # pvest = ImageTk.PhotoImage(file="assets/pve.png")
-    # pvpst = ImageTk.PhotoImage(file="assets/pvp.png")
-    # impst = ImageTk.PhotoImage(file="assets/imp.png")
+    # three buttons
+    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,)
+    rank_start_button.place(relx=0.5, rely=0.62, anchor="center")
+    rank_start_button.bind("<Motion>", movement)
+    rank_start_button.bind("<Leave>", leave)
 
+    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10)
+    pvp_start_button.place(relx=0.5, rely=0.75, anchor="center")
+    pvp_start_button.bind("<Motion>", movement)
+    pvp_start_button.bind("<Leave>", leave)
 
-    # rank_start_button = tk.Button( text="PVE", image=pvest, command=pve_run, bg="#F5F176", width=223, height=46, relief="raised", borderwidth=0).place(relx=0.5, rely=0.7, anchor="center")
-    # pvp_start_button = tk.Button(text="PVP", image=pvpst, command=pvp_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
-    # imps_start_button = tk.Button( text="IMPOSSIBLE", image=impst, command=imps_run, bg="#F5F176", width=224, height=46, relief="ridge", borderwidth=0).place(relx=0.5, rely=0.9, anchor="center")
-    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,).place(relx=0.5, rely=0.62, anchor="center")
-    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.75, anchor="center")
-    imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10).place(relx=0.5, rely=0.88, anchor="center")
+    imps_start_button = tk.Button( text="IMPOSSIBLE", command=imps_run, relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10)
+    imps_start_button.place(relx=0.5, rely=0.88, anchor="center")
+    imps_start_button.bind("<Motion>", movement)
+    imps_start_button.bind("<Leave>", leave)
+
 
     root_window.mainloop()
 
@@ -847,6 +851,14 @@ def compare_hand(hand_a, hand_b):
 
 
 
+# when mouse move to button, it turns bigger
+def movement(event):
+
+    event.widget['font'] = ("Eras Bold ITC", 33)
+
+# when mouse move to button, it change smaller
+def leave(event):
+    event.widget['font'] = ("Eras Bold ITC", 30)
 
 
 def rotate_hand(hand):
