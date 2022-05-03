@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import pygame as py
 import Animation
+from tensorflow.keras.models import load_model
 
 from processImage import model_recognizeSkin
 
@@ -39,15 +40,32 @@ py.mixer.music.load(r'assets/bgm/main_theme.mp3')
 # model = model_from_json(model_json)
 # model.load_weights("../skin_v2_model.h5")
 
-with open('../skin_v4_1_model.json', 'r') as f:
-    model_json = f.read()
-model = model_from_json(model_json)
-model.load_weights("../skin_v4_1_model.h5")
+# with open('../skin_v4_5_model.json', 'r') as f:
+#     model_json = f.read()
+# model = model_from_json(model_json)
+# model.load_weights("../skin_v4_5_model.h5")
+
+model = load_model("../skin_resnet_v3_model20.h5")
+
+# with open('../resnet_model_1.json', 'r') as f:
+#     model_json = f.read()
+# model = model_from_json(model_json)
+# model.load_weights("../resnet_model_1.h5")
+
+# with open('../resnet_model_1.json', 'r') as f:
+#     model_json = f.read()
+# model = model_from_json(model_json)
+# model = load_model("../best_model.h5")
 
 # with open('../skin_v3_simple_dataset_model.json', 'r') as f:
 #     model_json = f.read()
 # model = model_from_json(model_json)
 # model.load_weights("../skin_v3_simple_dataset_model.h5")
+
+# with open('../skin_v4_5_model.json', 'r') as f:
+#     model_json = f.read()
+# model = model_from_json(model_json)
+# model.load_weights("../skin_v4_5_model.h5")
 
 
 # def predict_result(processImage):
@@ -65,23 +83,46 @@ model.load_weights("../skin_v4_1_model.h5")
 #     result_index = np.argmax(result)
 #     print(result_list[result_index])
 
+# def predict_result(img):
+#     result_list = ["paper", "rock", "scissors"]
+#     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+#
+#     processImage = recognizeSkin(img)
+#     plt.imshow(processImage)
+#     plt.show()
+#     # processImage = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+#     processImage = cv.resize(processImage, (200, 200), interpolation=cv.INTER_AREA)
+#
+#     processImage = image.img_to_array(processImage)
+#     picture = np.expand_dims(processImage, axis=0)
+#     # img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+#     # picture = model_recognizeSkin(img)
+#     # picture = cv.cvtColor(picture, cv.COLOR_BGR2GRAY)
+#     # picture = cv.resize(picture, (200, 200), interpolation=cv.INTER_AREA)
+#     # picture = image.img_to_array(picture)
+#     # picture = np.expand_dims(picture, axis=0)
+#
+#     result = model.predict(picture)
+#     print(result)
+#     result_index = np.argmax(result)
+#     result = result_list[result_index]
+#     return result
+
+
 def predict_result(img):
+
     result_list = ["paper", "rock", "scissors"]
     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-    processImage = recognizeSkin(img)
+    img_array = cv.resize(img, (200, 200))
+    processImage = recognizeSkin(img_array)
+
+    #for single channle
+    processImage = processImage / 255.0
+
     plt.imshow(processImage)
     plt.show()
     # processImage = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    processImage = cv.resize(processImage, (200, 200), interpolation=cv.INTER_AREA)
-
-    processImage = image.img_to_array(processImage)
     picture = np.expand_dims(processImage, axis=0)
-    # img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-    # picture = model_recognizeSkin(img)
-    # picture = cv.cvtColor(picture, cv.COLOR_BGR2GRAY)
-    # picture = cv.resize(picture, (200, 200), interpolation=cv.INTER_AREA)
-    # picture = image.img_to_array(picture)
-    # picture = np.expand_dims(picture, axis=0)
 
     result = model.predict(picture)
     print(result)
