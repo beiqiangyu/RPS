@@ -45,7 +45,7 @@ py.mixer.music.load(r'assets/bgm/main_theme.mp3')
 # model = model_from_json(model_json)
 # model.load_weights("../skin_v4_5_model.h5")
 
-model = load_model("../skin_resnet_v3_model20.h5")
+model = load_model("../skin_resnet_v3_model40.h5")
 
 # with open('../resnet_model_1.json', 'r') as f:
 #     model_json = f.read()
