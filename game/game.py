@@ -40,13 +40,14 @@ py.mixer.music.load(r'assets/bgm/main_theme.mp3')
 # model = model_from_json(model_json)
 # model.load_weights("../skin_v2_model.h5")
 
-# with open('../skin_v4_5_model.json', 'r') as f:
+# with open('../skin_v4_1_model.json', 'r') as f:
 #     model_json = f.read()
 # model = model_from_json(model_json)
-# model.load_weights("../skin_v4_5_model.h5")
+# model.load_weights("../skin_v4_1_model.h5")
 
-model = load_model("../skin_resnet_v3_model40.h5")
-
+# model = load_model("../skin_resnet_v3_model40.h5")
+# model = load_model("../skin_alexnet_v1_model.h5")
+model = load_model("../skin_v4_real_res_2_model.h5")
 # with open('../resnet_model_1.json', 'r') as f:
 #     model_json = f.read()
 # model = model_from_json(model_json)
@@ -83,52 +84,48 @@ model = load_model("../skin_resnet_v3_model40.h5")
 #     result_index = np.argmax(result)
 #     print(result_list[result_index])
 
-# def predict_result(img):
-#     result_list = ["paper", "rock", "scissors"]
-#     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-#
-#     processImage = recognizeSkin(img)
-#     plt.imshow(processImage)
-#     plt.show()
-#     # processImage = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-#     processImage = cv.resize(processImage, (200, 200), interpolation=cv.INTER_AREA)
-#
-#     processImage = image.img_to_array(processImage)
-#     picture = np.expand_dims(processImage, axis=0)
-#     # img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
-#     # picture = model_recognizeSkin(img)
-#     # picture = cv.cvtColor(picture, cv.COLOR_BGR2GRAY)
-#     # picture = cv.resize(picture, (200, 200), interpolation=cv.INTER_AREA)
-#     # picture = image.img_to_array(picture)
-#     # picture = np.expand_dims(picture, axis=0)
-#
-#     result = model.predict(picture)
-#     print(result)
-#     result_index = np.argmax(result)
-#     result = result_list[result_index]
-#     return result
-
-
 def predict_result(img):
-
     result_list = ["paper", "rock", "scissors"]
     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-    img_array = cv.resize(img, (200, 200))
-    processImage = recognizeSkin(img_array)
 
-    #for single channle
-    processImage = processImage / 255.0
-
+    processImage = recognizeSkin(img)
     plt.imshow(processImage)
     plt.show()
     # processImage = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    processImage = cv.resize(processImage, (200, 200), interpolation=cv.INTER_AREA)
+
+    processImage = image.img_to_array(processImage)
+    processImage = processImage / 255.0
     picture = np.expand_dims(processImage, axis=0)
+    # img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    # picture = model_recognizeSkin(img)
+    # picture = cv.cvtColor(picture, cv.COLOR_BGR2GRAY)
+    # picture = cv.resize(picture, (200, 200), interpolation=cv.INTER_AREA)
+    # picture = image.img_to_array(picture)
+    # picture = np.expand_dims(picture, axis=0)
 
     result = model.predict(picture)
     print(result)
     result_index = np.argmax(result)
     result = result_list[result_index]
     return result
+
+
+# def predict_result(img):
+#     result_list = ["paper", "rock", "scissors"]
+#     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
+#     img_array = cv.resize(img, (200, 200))
+#     processImage = recognizeSkin(img_array)
+#     processImage = processImage / 255.0
+#     plt.imshow(processImage)
+#     plt.show()
+#     picture = np.expand_dims(processImage, axis=0)
+#     result = model.predict(picture)
+#     print(result)
+#     result_index = np.argmax(result)
+#     result = result_list[result_index]
+#     return result
+
 
 def get_heightest_score():
     f = open("assets/score.txt", "r")
@@ -212,12 +209,12 @@ def root_window_run():
 
 
     # three buttons
-    rank_start_button = tk.Button( text="PVE", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,)
+    rank_start_button = tk.Button( text="vs Computer", command=pve_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,)
     rank_start_button.place(relx=0.5, rely=0.62, anchor="center")
     rank_start_button.bind("<Motion>", movement)
     rank_start_button.bind("<Leave>", leave)
 
-    pvp_start_button = tk.Button(text="PVP",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10)
+    pvp_start_button = tk.Button(text="vs Players",command=pvp_run,relief="groove", font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10)
     pvp_start_button.place(relx=0.5, rely=0.75, anchor="center")
     pvp_start_button.bind("<Motion>", movement)
     pvp_start_button.bind("<Leave>", leave)
@@ -242,6 +239,8 @@ def imps_window():
     def back_run():
         window.destroy()
         root_window_run()
+
+
 
     bkbut = ImageTk.PhotoImage(file="assets/back.png")
     bkbut_start = tk.Button(text="back", image=bkbut, command=back_run, bg="#F5F176", width=75, height=75,
@@ -310,6 +309,13 @@ def imps_window():
             Animation.pk_result(window, tmp)
         else:
             return
+
+    capture_btn = tk.Button(text="Start Capture", relief="groove",font=("Eras Bold ITC",30),bg="#f0f0f0" ,width=10)
+    capture_btn.place(relx=0.5,rely=0.93,anchor="center")
+    capture_btn.bind("<Button-1>",count_down_start)
+    capture_btn.bind("<Motion>",movement)
+    capture_btn.bind("<Leave>",leave)
+
     def main():
         while True:
             img = cv_image(capture)
@@ -404,6 +410,12 @@ def pve_window():
         else:
             return
 
+    capture_btn = tk.Button(text="Start Capture", relief="groove",font=("Eras Bold ITC",30),bg="#f0f0f0" ,width=10)
+    capture_btn.place(relx=0.5,rely=0.93,anchor="center")
+    capture_btn.bind("<Button-1>",count_down_start)
+    capture_btn.bind("<Motion>",movement)
+    capture_btn.bind("<Leave>",leave)
+
     def main():
         while True:
             simg = cv_image(capture)
@@ -443,18 +455,23 @@ def pvp_prepare_window():
         window.destroy()
         pvp_run(4)
 
-    two_person = ImageTk.PhotoImage(file="assets/2p.png")
-    three_person = ImageTk.PhotoImage(file="assets/3p.png")
-    four_person = ImageTk.PhotoImage(file="assets/4p.png")
+    one_p = tk.Button(text="2 player",command=two_person_run,font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,
+                                  relief="raised")
+    one_p.place(relx=0.5, rely=0.2, anchor="center")
+    one_p.bind("<Motion>",movement)
+    one_p.bind("<Leave>",leave)
 
-    tk.Button(text="2p", image=two_person, command=two_person_run, bg="#F5F176", width=462, height=100,
-              relief="raised", borderwidth=0).place(relx=0.5, rely=0.2, anchor="center")
+    two_p = tk.Button(text="3 player", command=three_person_run, font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,
+                                  relief="raised")
+    two_p.place(relx=0.5, rely=0.5, anchor="center")
+    two_p.bind("<Motion>",movement)
+    two_p.bind("<Leave>",leave)
 
-    tk.Button(text="3p", image=three_person, command=three_person_run, bg="#F5F176", width=462, height=100,
-              relief="raised", borderwidth=0).place(relx=0.5, rely=0.5, anchor="center")
-
-    tk.Button(text="4p", image=four_person, command=four_person_run, bg="#F5F176", width=462, height=100,
-              relief="raised", borderwidth=0).place(relx=0.5, rely=0.8, anchor="center")
+    three_p = tk.Button(text="4 player", command=four_person_run, font=("Eras Bold ITC",30),fg="#4876FF", bg="#f0f0f0", width=10,
+                                  relief="raised")
+    three_p.place(relx=0.5, rely=0.8, anchor="center")
+    three_p.bind("<Motion>",movement)
+    three_p.bind("<Leave>",leave)
     window.mainloop()
 
 
@@ -593,6 +610,12 @@ def pvp_run(num):
         else:
             return
         print("winner", who_win(lt_res, rt_res, rb_res, lb_res, num=num))
+
+    capture_btn = tk.Button(text="Start Capture", relief="groove",font=("Eras Bold ITC",30),bg="#f0f0f0" ,width=10)
+    capture_btn.place(relx=0.5,rely=0.93,anchor="center")
+    capture_btn.bind("<Button-1>",count_down_start)
+    capture_btn.bind("<Motion>",movement)
+    capture_btn.bind("<Leave>",leave)
 
     capture = cv.VideoCapture(0)
     p1syb = ImageTk.PhotoImage(file="assets/p1.png")
