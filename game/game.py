@@ -303,15 +303,16 @@ def imps_window():
 
     def count_down_start(event):
         nonlocal counting
-        rock_img_canvas.delete("all")
-        img = cv_image(capture)
-        result = predict_result(img)
         if counting == False:
+            rock_img_canvas.delete("all")
+            img = cv_image(capture)
+            result = predict_result(img)
+
             counting = True  # lock
             count_down(count_canvas, three)
             count_down(count_canvas, two)
             count_down(count_canvas, one)
-            counting = False  # unlock
+
 
             # nonlocal capture
             canvas.delete("all")
@@ -348,10 +349,11 @@ def imps_window():
                 # left_gesture(rock_img_canvas, "rock")
             tmp = [0]
             Animation.pk_result(window, tmp)
+            counting = False  # unlock
         else:
             return
 
-    capture_btn = tk.Button(text="Start Capture", relief="groove", font=("Eras Bold ITC", 30), bg="#f0f0f0", width=10)
+    capture_btn = tk.Button(text="Press S", relief="groove", font=("Eras Bold ITC", 30), bg="#f0f0f0", width=10)
     capture_btn.place(relx=0.5, rely=0.93, anchor="center")
     capture_btn.bind("<Button-1>", count_down_start)
     capture_btn.bind("<Motion>", movement)
@@ -419,15 +421,16 @@ def pve_window():
 
     def count_down_start(event):
         nonlocal counting
-        rock_img_canvas.delete("all")
-        img = cv_image(capture)
-        result = predict_result(img)
         if counting == False:
+            rock_img_canvas.delete("all")
+            img = cv_image(capture)
+            result = predict_result(img)
+
             counting = True  # lock
             count_down(count_canvas, three)
             count_down(count_canvas, two)
             count_down(count_canvas, one)
-            counting = False  # unlock
+
 
             # nonlocal capture
             gesture = ["rock", "paper", "scissors"]
@@ -454,12 +457,12 @@ def pve_window():
                 if score > int(height_score):
                     set_heightest_score(str(score))
                     score_board.config(text=score, fg="#FF0000")
-
+            counting = False  # unlock
             # two_hand_in(rock_img_canvas, canvas, gesture[randon_index], result)
         else:
             return
 
-    capture_btn = tk.Button(text="Start Capture", relief="groove", font=("Eras Bold ITC", 30), bg="#f0f0f0", width=10)
+    capture_btn = tk.Button(text="Press S", relief="groove", font=("Eras Bold ITC", 30), bg="#f0f0f0", width=10)
     capture_btn.place(relx=0.5, rely=0.93, anchor="center")
     capture_btn.bind("<Button-1>", count_down_start)
     capture_btn.bind("<Motion>", movement)
@@ -658,7 +661,7 @@ def pvp_run(num):
             count_down(count_canvas, three)
             count_down(count_canvas, two)
             count_down(count_canvas, one)
-            counting = False  # unlock
+
 
             # nonlocal captures
 
@@ -773,7 +776,7 @@ def pvp_run(num):
                 who_win_list.pop()
             new_winners_index = who_win(who_win_list, num=len(who_win_list))
             new_winners = []
-
+            counting = False  # unlock
             if new_winners_index[0] == -1:
                 return
             if len(winners) > 0 and winners[0] != -1:
@@ -785,12 +788,11 @@ def pvp_run(num):
             print("winner", winners)
 
 
-
         else:
             return
 
 
-    capture_btn = tk.Button(text="Start Capture", relief="groove", font=("Eras Bold ITC", 30), bg="#f0f0f0", width=10)
+    capture_btn = tk.Button(text="Press S", relief="groove", font=("Eras Bold ITC", 30), bg="#f0f0f0", width=10)
     capture_btn.place(relx=0.5, rely=0.93, anchor="center")
     capture_btn.bind("<Button-1>", count_down_start)
     capture_btn.bind("<Motion>", movement)

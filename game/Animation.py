@@ -4,6 +4,7 @@ import tkinter as tk
 from PIL import ImageTk, Image
 
 bgcolor = "#F7F268"
+
 def pk_result(window, result):
     result_canvas = tk.Canvas(window, bg=bgcolor, height=230, width=1280)
     result_canvas.config(highlightthickness=0)
